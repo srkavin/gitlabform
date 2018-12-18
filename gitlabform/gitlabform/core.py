@@ -244,8 +244,15 @@ class GitLabFormCore(object):
                 approvers = []
             if not approver_groups:
                 approver_groups = []
-            logging.info("Setting approvers to users %s and groups %s" % (approvers, approver_groups))
+            logging.info("Setting approvers to users %s and groups %s for new MRs" % (approvers, approver_groups))
             self.gl.put_approvers(project_and_group, approvers, approver_groups)
+
+            change_existing_mrs_approvers = configuration.get('merge_requests|change_existing_mrs_approvers')
+            if change_existing_mrs_approvers:
+                for mr in self.gl.get_mrs(project_and_group):
+                    logging.info("(Re)setting approvers to users %s and groups %s in exiting MR with iid %s"
+                                 % (approvers, approver_groups, mr['iid']))
+                    self.gl.set_mr_approvers(project_and_group, mr['iid'], approvers, approver_groups)
 
     @if_in_config_and_not_skipped
     def process_deploy_keys(self, project_and_group, configuration):

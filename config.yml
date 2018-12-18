@@ -88,6 +88,8 @@ group_settings:
         - user2
       approver_groups:
         - my_group1
+      # if below flag is enabled, gitlabform changes existing MR approvers to what's set above
+      change_existing_mrs_approvers: true
 
     # keys names are branches names and values are as parameters described at
     # https://docs.gitlab.com/ee/api/branches.html#protect-repository-branch
